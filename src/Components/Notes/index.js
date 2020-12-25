@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BaseButton from '../Base/Button';
 import NotesList from './List';
 import { bindActionCreators } from 'redux';
@@ -6,10 +6,16 @@ import { saveNote, deleteNote } from '../../Actions/Notes';
 import { connect } from 'react-redux';
 import TextInput from '../Base/TextInput';
 import { TextareaAutosize } from '@material-ui/core';
+import { withRouter } from "react-router-dom";
+import Logout from '../Logout';
 
-const Notes = ({ notes, saveNote, deleteNote }) => {
+const Notes = ({ notes, saveNote, deleteNote, user, history }) => {
   const [title, setTitle] = useState(null);
   const [note, setNote] = useState(null);
+
+  useEffect(() => {
+    if (!user) history.push('/');
+  }, [user]);
 
   const save = (e) => {
     e.preventDefault();
@@ -18,7 +24,10 @@ const Notes = ({ notes, saveNote, deleteNote }) => {
 
   return (
     <>
-      <div className='p10 bg-grey'>G Notes</div>
+      <div className='p10 bg-grey flex-row align-center'>
+        <div>G Notes</div>
+        <Logout />
+      </div>
       <div className='flex-row p10'>
         <NotesList notes={notes} deleteNote={deleteNote} />
         <form className='w60p flex-col' onSubmit={save}>
@@ -49,12 +58,11 @@ const Notes = ({ notes, saveNote, deleteNote }) => {
 };
 
 const mapStateToProps = (state) => {
-  const { notes } = state.notesState;
-  return { notes };
+  return { ...state.notesState, ...state.loginState };
 };
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(
   { saveNote, deleteNote }, dispatch
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(Notes);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Notes));

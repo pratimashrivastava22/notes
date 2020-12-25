@@ -2,18 +2,33 @@ import React, { useState, useEffect } from 'react';
 import BaseButton from '../Base/Button';
 import TextInput from '../Base/TextInput';
 import { connect } from 'react-redux';
-import { login } from '../../Actions/Login';
+import { login, setLoginError } from '../../Actions/Login';
 import { bindActionCreators } from 'redux';
 import { withRouter } from "react-router-dom";
 
-const Login = (props) => {
+const Login = ({ history, login, user, loginError, setLoginError }) => {
   const [username, setUserName] = useState(null);
   const [password, setPassword] = useState(null);
 
-  const onSubmit = () => {
+  useEffect(() => {
+    if (user && user.token) history.push('/notes');
+  }, [user]);
+
+  useEffect(() => {
+    if (user && user.token) history.push('/notes');
+  }, [user]);
+
+  useEffect(() => {
+    if (loginError) {
+      alert(loginError);
+      setLoginError({ loginError: null });
+    }
+  }, [loginError]);
+
+  const onSubmit = (e) => {
+    e.preventDefault();
     if (!username || !password) return;
-    props.login({ username, password });
-    props.history.push('/notes');
+    login({ username, password });
   };
 
   return (
@@ -23,12 +38,14 @@ const Login = (props) => {
           id='username'
           label='Username'
           onChange={(e) => setUserName(e.target.value)}
+          helperText={!username ? '*required' : ''}
         />
         <TextInput
           id='pasword'
           label='Password'
           type='password'
           onChange={(e) => setPassword(e.target.value)}
+          helperText={!password ? '*required' : ''}
         />
         <BaseButton
           text='Login'
@@ -40,12 +57,11 @@ const Login = (props) => {
 };
 
 const mapStateToProps = (state) => {
-  const { user } = state.loginState;
-  return { user };
+  return { ...state.loginState };
 };
 
 const mapDispatchToProps = (dispatch) => bindActionCreators(
-  { login }, dispatch
+  { login, setLoginError }, dispatch
 );
 
 

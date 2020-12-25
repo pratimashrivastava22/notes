@@ -5,4 +5,4 @@ export const LOGIN_ERROR = 'LOGIN_ERROR';
 
 export const login = makeActionCreator(LOGIN);
 export const loginSuccess = makeActionCreator(LOGIN_SUCCESS);
-export const loginError = makeActionCreator(LOGIN_ERROR);
+export const setLoginError = makeActionCreator(LOGIN_ERROR);

@@ -1,5 +1,5 @@
 ### `yarn` 
 ### `yarn start`
 
-Any login credentials can be entered as backend api is not added. 
+check db.json for valid login credentials.
 
